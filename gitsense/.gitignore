@@ -1,0 +1,60 @@
+# ── Environment & Secrets ────────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ── Python ───────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+*.whl
+
+# ── Virtual Environments ─────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+
+# ── Testing ──────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# ── Type Checking / Linting ──────────────────────────────────
+.mypy_cache/
+.ruff_cache/
+.pytype/
+
+# ── IDE / Editor ─────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── OS ───────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ── Docker ───────────────────────────────────────────────────
+docker-compose.override.yml
+
+# ── Database / Alembic ───────────────────────────────────────
+*.db
+*.sqlite3
+
+# ── Logs ─────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Misc ─────────────────────────────────────────────────────
+*.bak
+*.tmp
