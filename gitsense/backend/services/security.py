@@ -48,3 +48,32 @@ def decode_access_token(token: str) -> dict:
         return payload
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid or expired token.")
+
+
+# ── PAT Encryption at Rest ───────────────────────────────────────────────────
+
+import base64
+from cryptography.fernet import Fernet, InvalidToken
+
+def _get_fernet() -> Fernet:
+    key_bytes = hashlib.sha256(settings.app_secret_key.encode("utf-8")).digest()
+    fernet_key = base64.urlsafe_b64encode(key_bytes)
+    return Fernet(fernet_key)
+
+def encrypt_pat(pat: str) -> str:
+    """Encrypt a GitHub PAT before storing in DB."""
+    if not pat:
+        return ""
+    f = _get_fernet()
+    return f.encrypt(pat.encode("utf-8")).decode("utf-8")
+
+def decrypt_pat(encrypted_pat: str) -> str:
+    """Decrypt a GitHub PAT retrieved from DB. Gracefully falls back if unencrypted."""
+    if not encrypted_pat:
+        return ""
+    try:
+        f = _get_fernet()
+        return f.decrypt(encrypted_pat.encode("utf-8")).decode("utf-8")
+    except (InvalidToken, Exception):
+        # Return as-is if token was stored in plaintext prior to encryption feature
+        return encrypted_pat

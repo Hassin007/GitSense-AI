@@ -4,7 +4,7 @@ from sqlalchemy import select
 from backend.database import get_db
 from backend.models.repo import ConnectedRepo
 from backend.services.github import validate_repo_access, register_webhook, delete_webhook
-from backend.services.security import decode_access_token
+from backend.services.security import decode_access_token, encrypt_pat, decrypt_pat
 from pydantic import BaseModel
 
 router = APIRouter(prefix="/repos", tags=["repos"])
@@ -45,37 +45,54 @@ async def connect_repo(
     # 1. Validate PAT + repo access
     repo_data = await validate_repo_access(body.github_pat, body.repo_full_name)
 
-    # 2. Check not already connected
-    existing = await db.execute(
+    # 2. Check if this user already has this repo connected.
+    # If so, this is a RECONNECT (e.g. new machine, rotated ngrok URL) —
+    # update the existing record rather than blocking with a 409.
+    existing_result = await db.execute(
         select(ConnectedRepo).where(
             ConnectedRepo.user_id == user_id,
             ConnectedRepo.repo_full_name == body.repo_full_name
         )
     )
-    if existing.scalar_one_or_none():
-        raise HTTPException(status_code=409, detail="This repository is already connected.")
+    existing_repo = existing_result.scalar_one_or_none()
 
-    # 3. Register webhook
-    webhook_id = await register_webhook(body.github_pat, body.repo_full_name)
+    # 3. Register or repoint webhook (idempotent — safe to call every time)
+    webhook_id, was_repointed = await register_webhook(body.github_pat, body.repo_full_name)
 
-    # 4. Store in database
-    repo = ConnectedRepo(
-        user_id=user_id,
-        repo_full_name=body.repo_full_name,
-        branch=body.branch,
-        github_pat=body.github_pat,   # TODO: encrypt at rest in production
-        webhook_id=webhook_id,
-        webhook_active=True,
-    )
-    db.add(repo)
+    # 4. Store or update in database with encrypted PAT at rest
+    encrypted_pat = encrypt_pat(body.github_pat)
+    if existing_repo:
+        existing_repo.branch = body.branch
+        existing_repo.github_pat = encrypted_pat
+        existing_repo.webhook_id = webhook_id
+        existing_repo.webhook_active = True
+        repo = existing_repo
+    else:
+        repo = ConnectedRepo(
+            user_id=user_id,
+            repo_full_name=body.repo_full_name,
+            branch=body.branch,
+            github_pat=encrypted_pat,
+            webhook_id=webhook_id,
+            webhook_active=True,
+        )
+        db.add(repo)
+
     await db.commit()
     await db.refresh(repo)
 
+    message = (
+        f"Repository '{body.repo_full_name}' reconnected — webhook repointed to current backend."
+        if was_repointed
+        else f"Repository '{body.repo_full_name}' connected successfully."
+    )
+
     return {
-        "message": f"Repository '{body.repo_full_name}' connected successfully.",
+        "message": message,
         "repo_id": repo.id,
         "webhook_id": webhook_id,
         "branch": body.branch,
+        "was_repointed": was_repointed,
     }
 
 
@@ -115,7 +132,8 @@ async def disconnect_repo(repo_id: int, token: str, db: AsyncSession = Depends(g
 
     # Remove the webhook from GitHub
     if repo.webhook_id:
-        await delete_webhook(repo.github_pat, repo.repo_full_name, repo.webhook_id)
+        pat = decrypt_pat(repo.github_pat)
+        await delete_webhook(pat, repo.repo_full_name, repo.webhook_id)
 
     await db.delete(repo)
     await db.commit()

@@ -1,60 +1,138 @@
-# ── Environment & Secrets ────────────────────────────────────
+# ==============================================================================
+# GitSense AI — Package .gitignore (gitsense/)
+# ==============================================================================
+
+# ── Environment & Secrets ─────────────────────────────────────────────────────
 .env
+.env.*
 .env.local
 .env.*.local
+!.env.example
+*.pem
+*.key
 
-# ── Python ───────────────────────────────────────────────────
+# ── Python Cache & Bytecode ───────────────────────────────────────────────────
 __pycache__/
+**/__pycache__/
 *.py[cod]
 *$py.class
-*.egg-info/
-*.egg
-dist/
+*.so
+.Python
+
+# ── Python Build & Packaging ──────────────────────────────────────────────────
 build/
+develop-eggs/
+dist/
+downloads/
+eggs/
 .eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
 *.whl
 
-# ── Virtual Environments ─────────────────────────────────────
+# ── Virtual Environments ──────────────────────────────────────────────────────
 .venv/
 venv/
 env/
 ENV/
+env.bak/
+venv.bak/
 
-# ── Testing ──────────────────────────────────────────────────
+# ── Testing, Test Suites, Benchmarks & Coverage ──────────────────────────────
 .pytest_cache/
+**/pytest_cache/
 .coverage
+.coverage.*
 htmlcov/
+coverage/
 .tox/
 .nox/
+.backend/tests/
+backend/tests/
+tests/
+test/
+**/tests/
+**/test/
+demo_test_suite/
+test-suite/
+testfiles/
+scripts/
+**/scripts/
+test_*.py
+*_test.py
+test.py
+benchmark_*.py
+stress_*.py
 
-# ── Type Checking / Linting ──────────────────────────────────
+# ── Prompts & LLM Experimentation ─────────────────────────────────────────────
+prompts/
+**/prompts/
+*Prompt*.md
+*prompt*.md
+
+# ── Internal Development Notes, Analysis & Scratchpads ────────────────────────
+CLAUDE.md
+**/CLAUDE.md
+GEMINI_429_TPM_ANALYSIS.md
+**/GEMINI_429_TPM_ANALYSIS.md
+PRODUCTION_ISSUES.md
+**/PRODUCTION_ISSUES.md
+KNOWN_ISSUES.md
+**/KNOWN_ISSUES.md
+TODO.md
+**/TODO.md
+
+# ── AI Agent Tooling & Workspace Caches ───────────────────────────────────────
+.agent/
+.agents/
+**/.agent/
+**/.agents/
+
+# ── Type Checking / Linting ───────────────────────────────────────────────────
 .mypy_cache/
 .ruff_cache/
 .pytype/
+.hypothesis/
 
-# ── IDE / Editor ─────────────────────────────────────────────
+# ── IDE & Editor Settings ────────────────────────────────────────────────────
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# ── OS ───────────────────────────────────────────────────────
+# ── OS Generated Files ────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
 Desktop.ini
 
-# ── Docker ───────────────────────────────────────────────────
+# ── Docker ────────────────────────────────────────────────────────────────────
 docker-compose.override.yml
 
-# ── Database / Alembic ───────────────────────────────────────
+# ── Database & Storage ────────────────────────────────────────────────────────
 *.db
+*.sqlite
 *.sqlite3
+*.dump
 
-# ── Logs ─────────────────────────────────────────────────────
+# ── Logs & Debug Output ───────────────────────────────────────────────────────
 *.log
 logs/
+**/logs/
+backend.log
+**/backend.log
 
-# ── Misc ─────────────────────────────────────────────────────
+# ── PDF Exports & Temp Files ──────────────────────────────────────────────────
+*.pdf
+exports/
+temp/
+tmp/
 *.bak
 *.tmp

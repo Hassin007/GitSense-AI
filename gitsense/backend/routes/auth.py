@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -19,21 +19,27 @@ GITHUB_OAUTH_AUTHORIZE_URL = (
 
 
 @router.get("/login")
-async def login():
+async def login(redirect_url: str | None = Query(None)):
     """
     Redirect the user to GitHub's OAuth authorization page.
-    The frontend calls this URL directly in the browser.
+    Accepts optional redirect_url to return to a specific frontend.
     """
-    redirect_uri = f"{settings.backend_url}/auth/callback"
+    callback_uri = f"{settings.backend_url}/auth/callback"
     url = GITHUB_OAUTH_AUTHORIZE_URL.format(
         client_id=settings.github_client_id,
-        redirect_uri=redirect_uri
+        redirect_uri=callback_uri
     )
+    if redirect_url:
+        url += f"&state={redirect_url}"
     return RedirectResponse(url)
 
 
 @router.get("/callback")
-async def oauth_callback(code: str, db: AsyncSession = Depends(get_db)):
+async def oauth_callback(
+    code: str,
+    state: str | None = Query(None),
+    db: AsyncSession = Depends(get_db)
+):
     """
     GitHub redirects here after the user authorizes.
     We exchange the code for an access token, fetch the user, 
@@ -68,8 +74,9 @@ async def oauth_callback(code: str, db: AsyncSession = Depends(get_db)):
     # 4. Issue our own JWT
     token = create_access_token(user.id, user.github_username)
 
-    # 5. Redirect back to Streamlit with the token in the URL
-    return RedirectResponse(f"{settings.frontend_url}?token={token}")
+    # 5. Redirect back to destination frontend with token
+    target_frontend = state if (state and state.startswith("http")) else settings.frontend_url
+    return RedirectResponse(f"{target_frontend}?token={token}")
 
 
 @router.get("/me")
