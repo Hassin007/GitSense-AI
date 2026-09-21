@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+
+# Build & Output
+build/
+dist/
+.vite/
+
+# Python Cache (e.g. for pdf_utils)
+__pycache__/
+*.py[cod]
+
+# Testing, Test Files & Coverage
+coverage/
+.pytest_cache/
+tests/
+test/
+*.test.ts
+*.test.js
+*.test.tsx
+*.test.jsx
+*.spec.ts
+*.spec.js
+*.spec.tsx
+*.spec.jsx
+
+# Environment Variables & Secrets
+.env*
+!.env.example
+
+# Logs & Temporary Exports
+*.log
+*.pdf
+temp/
+tmp/
+
+# OS & IDE Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

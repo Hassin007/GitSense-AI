@@ -1,0 +1,182 @@
+# ==============================================================================
+# GitSense AI — Master Root .gitignore
+# ==============================================================================
+
+# ── Environment & Secrets ─────────────────────────────────────────────────────
+.env
+.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+!.env.example
+*.pem
+*.key
+
+# ── Virtual Environments ──────────────────────────────────────────────────────
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# ── Python Cache & Bytecode ───────────────────────────────────────────────────
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# ── Python Build & Packaging ──────────────────────────────────────────────────
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+*.manifest
+*.spec
+
+# ── Node.js & Frontend Build Output ───────────────────────────────────────────
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.vite/
+.next/
+out/
+.nuxt/
+Actual Frontend/node_modules/
+Actual Frontend/dist/
+Actual Frontend/assets/
+Actual Frontend/.vite/
+Actual Frontend/.env.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ── Testing, Test Suites, Benchmarks & Coverage ──────────────────────────────
+# Test Caches & Coverage
+.pytest_cache/
+**/pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage/
+.tox/
+.nox/
+.mypy_cache/
+.ruff_cache/
+.pytype/
+.hypothesis/
+
+# Test Directories, Suites & Mock Repositories
+demo_test_suite/
+test-suite/
+testfiles/
+tests/
+test/
+**/tests/
+**/test/
+.backend/tests/
+backend/tests/
+
+# Test & Benchmark Scripts & Folders
+scripts/
+**/scripts/
+test_*.py
+*_test.py
+test.py
+benchmark_*.py
+stress_*.py
+*.spec.ts
+*.spec.js
+*.spec.tsx
+*.spec.jsx
+*.test.ts
+*.test.js
+*.test.tsx
+*.test.jsx
+
+# ── Prompts & LLM Experimentation ─────────────────────────────────────────────
+prompts/
+**/prompts/
+*Prompt*.md
+*prompt*.md
+
+# ── Internal Development Notes, Analysis & Scratchpads ────────────────────────
+CLAUDE.md
+**/CLAUDE.md
+GEMINI_429_TPM_ANALYSIS.md
+**/GEMINI_429_TPM_ANALYSIS.md
+PRODUCTION_ISSUES.md
+**/PRODUCTION_ISSUES.md
+KNOWN_ISSUES.md
+**/KNOWN_ISSUES.md
+TODO.md
+**/TODO.md
+
+# ── AI Agent Tooling & Workspace Caches ───────────────────────────────────────
+.agent/
+.agents/
+**/.agent/
+**/.agents/
+
+# ── Database & Storage ────────────────────────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+*.dump
+
+# ── Logs & Debug Output ───────────────────────────────────────────────────────
+*.log
+logs/
+**/logs/
+backend.log
+**/backend.log
+
+# ── Export & Temporary Files ──────────────────────────────────────────────────
+*.pdf
+exports/
+temp/
+tmp/
+*.tmp
+*.bak
+*.swp
+*.swo
+*~
+
+# ── IDE & Editor Settings ────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ── OS Generated Files ────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# ── Docker ────────────────────────────────────────────────────────────────────
+docker-compose.override.yml
